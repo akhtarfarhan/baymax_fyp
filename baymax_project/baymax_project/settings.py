@@ -86,6 +86,9 @@ DATABASES = {
     }
 }
 
+#added manually
+# AUTH_USER_MODEL = 'predictor.User'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -135,3 +138,22 @@ if not os.path.exists(BASE_DIR / "static"):
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+#added manually for media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+#session settings added manually for login and logout functionality 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_AGE = 60 * 2  # 2 minutes
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+
+#added manually for login and logout functionality 
+LOGIN_URL = 'predictor:login'
+LOGOUT_REDIRECT_URL = 'predictor:login'
+
+

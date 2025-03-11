@@ -18,6 +18,7 @@
             </div>
             <div class="formBox">
                 <form id="signupForm" action="{% url 'predictor:signup' %}" method="post">
+                    {% csrf_token %}
                     <h2>Create Account</h2>
                     <div class="input-group">
                         <input type="text" placeholder="Username" required name="user_name">

@@ -35,7 +35,7 @@
                     </svg>
                     <span>Blog</span>
                 </a>
-                <a href="login_register.html" class="nav-button">
+                <a href="{% url 'predictor:login' %}" class="nav-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
@@ -66,7 +66,7 @@
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        <!-- <option value="other">Other</option> -->
                     </select>
                     <button class="next-button" style="display: none;">Next</button>
                     <!-- Hidden by default, shown on selection -->
@@ -75,43 +75,50 @@
                     <label for="age">Age</label>
                     <input type="number" id="age" name="age" min="1" max="120" required placeholder="Enter your age">
                     <button class="next-button" style="display: none;">Next</button>
-                    <!-- Hidden by default, shown on input -->
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="3">
                     <label for="pregnancies">Pregnancies</label>
                     <input type="number" id="pregnancies" name="pregnancies" min="0" required
                         placeholder="Number of pregnancies">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="4">
                     <label for="glucose">Glucose Level</label>
                     <input type="number" id="glucose" name="glucose" min="0" required placeholder="mg/dL">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="5">
                     <label for="bloodPressure">Blood Pressure</label>
                     <input type="number" id="bloodPressure" name="bloodPressure" min="0" required placeholder="mmHg">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="6">
                     <label for="skinThickness">Skin Thickness</label>
                     <input type="number" id="skinThickness" name="skinThickness" min="0" required placeholder="mm">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="7">
                     <label for="insulin">Insulin Level</label>
                     <input type="number" id="insulin" name="insulin" min="0" required placeholder="mu U/ml">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="8">
                     <label for="weight">Weight</label>
                     <input type="number" id="weight" name="weight" min="0" step="0.1" required placeholder="kg">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group" data-question="9">
                     <label for="height">Height</label>
                     <input type="number" id="height" name="height" min="0" step="0.01" required placeholder="m">
                     <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
                 </div>
                 <div class="form-group submit-group" data-question="10">
                     <button type="button" class="submit-button" id="submitPrediction">
@@ -218,10 +225,11 @@
             </div>
         </div>
     </footer>
-    <!-- <script src="script.js"></script> -->
-
+    
 </body>
-<script src="{% static 'js/predict.js' %}"></script>
-<script src="{% static 'js/script.js' %}"></script>  
+    {% comment %} <script src="{% static 'js/predict.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script> {% endcomment %}
 
+    <script src="{% static 'js/predict.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'js/script.js' %}?v={% now 'U' %}"></script>
 </html>

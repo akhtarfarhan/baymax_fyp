@@ -17,13 +17,14 @@
                 <img src="istockphoto-1047558940-612x612.jpg" alt="Login Image">
             </div>
             <div class="formBox">
-                <form id="signinForm">
+                <form id="signinForm" action="{% url 'predictor:login' %}" method="post" >
+                    {% csrf_token %}
                     <h2>Login</h2>
                     <div class="input-group">
-                        <input type="text" placeholder="Username" required>
+                        <input type="text" placeholder="Username" required name="user_name">
                     </div>
                     <div class="input-group">
-                        <input type="password" placeholder="Password" required>
+                        <input type="password" placeholder="Password" required name="password">
                     </div>
                     <div class="input-group">
                         <input type="submit" value="Login">

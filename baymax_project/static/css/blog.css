@@ -26,7 +26,7 @@
 
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr); /* Original 3-column layout */
     gap: 2rem;
 }
 
@@ -317,7 +317,6 @@
 .blog-creation-container {
     position: fixed;
     bottom: 100px;
-    /* Positioned above the chatbot */
     right: 30px;
     z-index: 900;
 }
@@ -446,6 +445,27 @@
     outline: none;
     border-color: var(--mint-dark);
     box-shadow: 0 0 8px rgba(0, 178, 148, 0.3);
+}
+
+.blog-image-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--mint);
+    border-radius: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.blog-image-input:focus {
+    outline: none;
+    border-color: var(--mint-dark);
+    box-shadow: 0 0 8px rgba(0, 178, 148, 0.3);
+}
+
+.image-preview {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
 }
 
 /* Blog Creation Footer */

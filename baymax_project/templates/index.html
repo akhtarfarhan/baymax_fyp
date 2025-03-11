@@ -151,9 +151,9 @@
     <!-- CTA Section -->
     <section class="cta">
         <div class="container">
-            <h2 class="fade-up">Ready to Take Control of Your Health?</h2>
+            <h2 class="fade-up">Ready to Take Control of Your Health?</h2>  {% comment %} added manually for dashboard link {% endcomment %}        
             <div class="fade-up">
-                <a href="dashboard.html" class="cta-button primary">
+                <a href="{% url 'predictor:dashboard' %}" class="cta-button primary">
                     Dashboard
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -56,19 +56,17 @@
     <!-- Dashboard Section -->
     <section class="dashboard">
         <div class="container">
-            <h1>Welcome Back, <span id="userName">Tsewang Norbu Gurung</span>!</h1>
+            <h1>Welcome Back, {{ name }}!</h1>
             <div class="dashboard-grid">
                 <!-- User Info Card -->
                 <div class="dashboard-card tilted-card">
                     <div class="card-content">
                         <h2>Your Information</h2>
                         <div class="card-summary">
-                            <p><strong>Name:</strong> <span id="userFullName">Tsewang Norbu Gurung</span></p>
-                            <p><strong>Age:</strong> <span id="userAge">22</span></p>
-                        </div>
-                        <div class="card-details">
-                            <p><strong>Email:</strong> <span id="userEmail">tsewang.norbu@example.com</span></p>
-                            <p><strong>Gender:</strong> <span id="userGender">Male</span></p>
+                            <p>Name: {{ name }}</p>
+                            <p>Age: {{ age|default:'Not provided' }}</p>
+                        <p>Email: {{ email }}</p>
+                        <p>Gender: {{ gender|default:'Not provided' }}</p>
                         </div>
                     </div>
                 </div>
