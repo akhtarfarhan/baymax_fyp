@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("predict.js loaded successfully");
 
-    // Form slider functionality
     const formSlider = document.getElementById('formSlider');
     if (formSlider) {
         const questions = formSlider.querySelectorAll('.form-group');
         let currentQuestion = 0;
         const formData = {};
+        const submitButton = document.getElementById('submitPrediction');
 
-        // Validation ranges with units
+        // Validation ranges
         const ranges = {
             age: { min: 1, max: 120, unit: 'years' },
             weight: { min: 0, max: 300, unit: 'kg' },
-            height: { min: 2, max: 8, unit: 'ft' }, // Updated to feet
+            height: { min: 2, max: 8, unit: 'ft' },
             pregnancies: { min: 0, max: 20, unit: '' },
             glucose: { min: 0, max: 199, unit: 'mg/dL' },
             bloodPressure: { min: 0, max: 200, unit: 'mmHg' },
@@ -20,91 +20,128 @@ document.addEventListener('DOMContentLoaded', function () {
             insulin: { min: 0, max: 846, unit: 'mu U/ml' }
         };
 
-        // Ensure the first question is visible on page load
+        // Show first question
         questions[currentQuestion].classList.add('active');
 
-        // Function to show/hide buttons
-        function showNextButton(element) {
-            const nextButton = element.closest('.form-group').querySelector('.next-button');
-            nextButton.style.display = 'inline-block';
-        }
-
-        function showBackButton(element) {
-            const backButton = element.closest('.form-group').querySelector('.back-button');
-            if (backButton) backButton.style.display = 'inline-block';
-        }
-
-        function hideNextButton(element) {
-            const nextButton = element.closest('.form-group').querySelector('.next-button');
-            nextButton.style.display = 'none';
-        }
-
-        function hideBackButton(element) {
-            const backButton = element.closest('.form-group').querySelector('.back-button');
-            if (backButton) backButton.style.display = 'none';
-        }
-
-        // Validate input against range
+        // Validate input
         function validateInput(input) {
             const name = input.name;
             const value = parseFloat(input.value);
             const range = ranges[name];
-            if (!range) return true; // No range for gender
-            return value >= range.min && value <= range.max;
+            return !range || (value >= range.min && value <= range.max);
         }
 
-        // Handle select change for gender
+        // Show/Hide Next Button
+        function toggleNextButton(element, show) {
+            const nextButton = element.closest('.form-group').querySelector('.next-button');
+            if (nextButton) {
+                nextButton.style.display = show ? 'inline-block' : 'none';
+            } else {
+                console.error('Next button not found in form-group');
+            }
+        }
+
+        // Show/Hide Back Button
+        function toggleBackButton(element, show) {
+            const backButton = element.closest('.form-group').querySelector('.back-button');
+            if (backButton) backButton.style.display = show ? 'inline-block' : 'none';
+        }
+
+        // Move to next question
+        function moveToNextQuestion() {
+            questions[currentQuestion].classList.remove('active');
+            currentQuestion++;
+
+            // Skip Pregnancies for males
+            if (currentQuestion === 4 && formData.gender === 'male') {
+                formData.pregnancies = 0;
+                currentQuestion++;
+            }
+
+            if (currentQuestion < questions.length) {
+                questions[currentQuestion].classList.add('active');
+                if (currentQuestion === questions.length - 1) {
+                    submitButton.classList.add('active');
+                }
+            }
+        }
+
+        // Move to previous question
+        function moveToPreviousQuestion() {
+            if (currentQuestion > 0) {
+                questions[currentQuestion].classList.remove('active');
+                currentQuestion--;
+
+                if (currentQuestion === 4 && formData.gender === 'male') {
+                    currentQuestion--;
+                }
+
+                questions[currentQuestion].classList.add('active');
+                submitButton.classList.remove('active');
+            }
+        }
+
+        // Handle gender selection
         const genderSelect = document.getElementById('gender');
         if (genderSelect) {
             genderSelect.addEventListener('change', () => {
+                console.log('Gender changed to:', genderSelect.value);
                 if (genderSelect.value) {
                     formData.gender = genderSelect.value;
-                    console.log("Gender selected:", formData.gender);
-                    showNextButton(genderSelect);
+                    toggleNextButton(genderSelect, true); // Show Next button when a gender is selected
                 } else {
-                    hideNextButton(genderSelect);
+                    toggleNextButton(genderSelect, false); // Hide if no selection
                 }
             });
 
             const genderNextButton = genderSelect.closest('.form-group').querySelector('.next-button');
-            genderNextButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (genderSelect.value) {
-                    moveToNextQuestion();
-                    hideNextButton(genderSelect);
-                }
-            });
+            if (genderNextButton) {
+                genderNextButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Next button clicked, gender:', formData.gender);
+                    if (genderSelect.value) {
+                        moveToNextQuestion();
+                        toggleNextButton(genderSelect, false); // Hide Next button after moving
+                    }
+                });
+            } else {
+                console.error('Next button not found for gender selection');
+            }
+        } else {
+            console.error('Gender select element not found');
         }
 
-        // Handle input changes and validation
+        // Handle input changes for number fields
         const inputs = document.querySelectorAll('input[type="number"]');
         inputs.forEach(input => {
             input.addEventListener('input', () => {
                 if (input.value && validateInput(input)) {
-                    showNextButton(input);
-                    showBackButton(input);
+                    toggleNextButton(input, true);
+                    if (currentQuestion > 0) toggleBackButton(input, true);
                 } else {
-                    hideNextButton(input);
-                    hideBackButton(input);
+                    toggleNextButton(input, false);
+                    toggleBackButton(input, false);
                 }
             });
 
             const nextButton = input.closest('.form-group').querySelector('.next-button');
-            nextButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (input.value) {
-                    if (validateInput(input)) {
-                        formData[input.name] = input.value;
-                        moveToNextQuestion();
-                        hideNextButton(input);
+            if (nextButton) {
+                nextButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (input.value) {
+                        if (validateInput(input)) {
+                            formData[input.name] = input.value;
+                            moveToNextQuestion();
+                            toggleNextButton(input, false);
+                        } else {
+                            const range = ranges[input.name];
+                            alert(`Please enter a value for ${input.name} between ${range.min} and ${range.max} ${range.unit}.`);
+                        }
                     } else {
-                        const range = ranges[input.name];
-                        alert(`Please enter a value for ${input.name} between ${range.min} and ${range.max} ${range.unit}.`);
+                        alert('Please fill in the field before proceeding.');
                     }
-                } else {
-                    alert('Please fill in the field before proceeding.');
-                }
-            });
+                });
+            }
 
             const backButton = input.closest('.form-group').querySelector('.back-button');
             if (backButton) {
@@ -115,8 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Handle final submission
-        const submitButton = document.getElementById('submitPrediction');
+        // Handle submission
         if (submitButton) {
             submitButton.addEventListener('click', () => {
                 let isValid = true;
@@ -129,86 +165,60 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
                 if (isValid) {
-                    console.log('Final Form Data:', formData);
-                    // Add API call or further logic here
-                    // If your model expects height in meters, convert it here:
-                    formData.heightInMeters = (parseFloat(formData.height) * 0.3048).toFixed(2);
-                    console.log('Height in meters:', formData.heightInMeters);
+                    console.log('Final Form Data before submission:', formData); // Add this log
+                    fetch('/predict/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken(),
+                        },
+                        body: JSON.stringify({ data: formData })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while submitting your prediction.');
+                    });
                 }
             });
         }
 
-        // Move to next question
-        function moveToNextQuestion() {
-            questions[currentQuestion].classList.remove('active');
-            currentQuestion++;
-
-            // Skip Pregnancies (data-question="5", index 4) if gender is male
-            if (currentQuestion === 4 && formData.gender === 'male') {
-                console.log("Skipping Pregnancies for male");
-                formData.pregnancies = 0;
-                currentQuestion++;
+        // Function to get CSRF token from cookies
+        function getCsrfToken() {
+            const name = 'csrftoken';
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [key, value] = cookie.trim().split('=');
+                if (key === name) return value;
             }
-
-            if (currentQuestion < questions.length) {
-                questions[currentQuestion].classList.add('active');
-                showBackButton(questions[currentQuestion].querySelector('input, select'));
-                if (currentQuestion === questions.length - 1) {
-                    setTimeout(() => {
-                        submitButton.classList.add('active');
-                    }, 300);
-                }
-            }
-        }
-
-        // Move to previous question
-        function moveToPreviousQuestion() {
-            if (currentQuestion > 0) {
-                questions[currentQuestion].classList.remove('active');
-                currentQuestion--;
-
-                // Adjust if moving back past the skipped Pregnancies question
-                if (currentQuestion === 4 && formData.gender === 'male') {
-                    console.log("Moving back past Pregnancies for male");
-                    currentQuestion--;
-                }
-
-                questions[currentQuestion].classList.add('active');
-                hideNextButton(questions[currentQuestion].querySelector('input, select'));
-                hideBackButton(questions[currentQuestion].querySelector('input, select'));
-
-                const currentInput = questions[currentQuestion].querySelector('input, select');
-                if (currentInput.value && validateInput(currentInput)) {
-                    showNextButton(currentInput);
-                    if (currentQuestion > 0) showBackButton(currentInput);
-                }
-
-                if (currentQuestion < questions.length - 1) {
-                    submitButton.classList.remove('active');
-                }
-            }
+            console.warn('CSRF Token not found in cookies');
+            return '';
         }
     }
 
-    // Chatbot Toggle (unchanged)
+    // Chatbot functionality (unchanged)
     const chatbotButton = document.getElementById('chatbotButton');
     const chatbotWindow = document.getElementById('chatbotWindow');
     const closeButton = document.getElementById('closeButton');
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatbotBody = document.getElementById('chatbotBody');
 
     if (chatbotButton && chatbotWindow && closeButton) {
         chatbotButton.addEventListener('click', () => {
             chatbotWindow.classList.toggle('active');
         });
-
         closeButton.addEventListener('click', () => {
             chatbotWindow.classList.remove('active');
         });
     }
-
-    // Send Message (unchanged)
-    const chatInput = document.getElementById('chatInput');
-    const sendButton = document.getElementById('sendButton');
-    const chatbotBody = document.getElementById('chatbotBody');
 
     if (chatInput && sendButton && chatbotBody) {
         sendButton.addEventListener('click', () => {

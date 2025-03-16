@@ -157,3 +157,6 @@ LOGIN_URL = 'predictor:login'
 LOGOUT_REDIRECT_URL = 'predictor:login'
 
 
+#added manually for blog functionality
+# LOGIN_URL = '/login/'
+

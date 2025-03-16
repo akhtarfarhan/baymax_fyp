@@ -22,7 +22,6 @@
     max-width: 600px;
     margin: 0 auto;
     height: 200px;
-    /* Adjust height as needed */
     overflow: hidden;
 }
 
@@ -83,13 +82,6 @@
     border-radius: 9999px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
-    display: none;
-    /* Hidden by default */
-}
-
-.next-button.active {
-    display: block;
-    /* Shown when active */
 }
 
 .next-button:hover {
@@ -111,14 +103,7 @@
     border-radius: 9999px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
-    display: none;
-    /* Hidden by default */
-    margin-right: 1rem; /* Space between Back and Next buttons */
-}
-
-.back-button.active {
-    display: block;
-    /* Shown when active */
+    margin-right: 1rem;
 }
 
 .back-button:hover {
@@ -147,12 +132,12 @@
     border: none;
     border-radius: 9999px;
     cursor: pointer;
-    transform: scale(0);
-    transition: transform 0.3s ease, background-color 0.3s;
+    opacity: 0;
+    transition: opacity 0.3s ease, background-color 0.3s;
 }
 
 .submit-button.active {
-    transform: scale(1);
+    opacity: 1;
 }
 
 .submit-button:hover {
@@ -164,14 +149,11 @@
     .prediction-form h1 {
         font-size: 2rem;
     }
-
     .form-group {
         padding: 1.5rem;
     }
-
     .form-slider {
         height: auto;
-        /* Allow height to adjust dynamically on mobile */
     }
 }
 
@@ -183,7 +165,6 @@
     z-index: 1000;
 }
 
-/* Chat Button */
 .chatbot-button {
     width: 60px;
     height: 60px;
@@ -209,7 +190,6 @@
     color: var(--white);
 }
 
-/* Chat Window */
 .chatbot-window {
     width: 300px;
     height: 400px;
@@ -225,7 +205,6 @@
     display: flex;
 }
 
-/* Chat Header */
 .chatbot-header {
     background-color: var(--mint);
     padding: 1rem;
@@ -253,7 +232,6 @@
     color: var(--white);
 }
 
-/* Chat Body */
 .chatbot-body {
     flex: 1;
     padding: 1rem;
@@ -280,7 +258,6 @@
     margin-left: auto;
 }
 
-/* Chat Input */
 .chatbot-input {
     display: flex;
     align-items: center;
@@ -318,7 +295,6 @@
     color: var(--white);
 }
 
-/* Add this to predict.css */
 .range-info {
     font-size: 0.875rem;
     color: var(--gray-600);
@@ -326,7 +302,6 @@
     margin-left: 0.5rem;
 }
 
-/* Ensure input validation feedback */
 .form-group input:invalid {
     border-color: var(--red);
     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
