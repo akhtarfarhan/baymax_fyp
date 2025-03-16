@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BayMax - Diabetes Prediction</title>
+    <meta name="description" content="Advanced diabetes prediction system powered by AI">
+    <meta name="author" content="BayMax">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/predict.css' %}">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'predictor:index' %}" class="nav-logo">BayMax</a>
+            <div class="nav-links">
+                <a href="{% url 'predictor:index' %}" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'predictor:blog' %}" class="nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    <span>Blog</span>
+                </a>
+                <a href="{% url 'predictor:login' %}" class="nav-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    <span>Login</span>
+                </a>
+            </div>
+            <button class="mobile-menu-button">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Prediction Form Section -->
+    <section class="prediction-form">
+        <div class="container">
+            <h1 class="fade-up">Diabetes Risk Assessment</h1>
+            <p class="fade-up">Answer the questions below one at a time.</p>
+            <div class="form-slider" id="formSlider">
+                <div class="form-group active" data-question="1">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <!-- <option value="other">Other</option> -->
+                    </select>
+                    <button class="next-button" style="display: none;">Next</button>
+                    <!-- Hidden by default, shown on selection -->
+                </div>
+                <div class="form-group" data-question="2">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="1" max="120" required placeholder="Enter your age">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="3">
+                    <label for="pregnancies">Pregnancies</label>
+                    <input type="number" id="pregnancies" name="pregnancies" min="0" required
+                        placeholder="Number of pregnancies">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="4">
+                    <label for="glucose">Glucose Level</label>
+                    <input type="number" id="glucose" name="glucose" min="0" required placeholder="mg/dL">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="5">
+                    <label for="bloodPressure">Blood Pressure</label>
+                    <input type="number" id="bloodPressure" name="bloodPressure" min="0" required placeholder="mmHg">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="6">
+                    <label for="skinThickness">Skin Thickness</label>
+                    <input type="number" id="skinThickness" name="skinThickness" min="0" required placeholder="mm">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="7">
+                    <label for="insulin">Insulin Level</label>
+                    <input type="number" id="insulin" name="insulin" min="0" required placeholder="mu U/ml">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="8">
+                    <label for="weight">Weight</label>
+                    <input type="number" id="weight" name="weight" min="0" step="0.1" required placeholder="kg">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group" data-question="9">
+                    <label for="height">Height</label>
+                    <input type="number" id="height" name="height" min="0" step="0.01" required placeholder="m">
+                    <button class="next-button" style="display: none;">Next</button>
+                    <button class="back-button" style="display: none;">Back</button>
+                </div>
+                <div class="form-group submit-group" data-question="10">
+                    <button type="button" class="submit-button" id="submitPrediction">
+                        Get Prediction
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Chatbot UI -->
+    <div class="chatbot-container">
+        <!-- Chat Button -->
+        <button class="chatbot-button" id="chatbotButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                </path>
+            </svg>
+        </button>
+
+        <!-- Chat Window -->
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>BayMax Chat</h3>
+                <button class="close-button" id="closeButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="chatbot-body" id="chatbotBody">
+                <!-- Chat Messages Go Here -->
+                <div class="message bot-message">
+                    <p>Hi! I'm BayMax. How can I help you today?</p>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button id="sendButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>BayMax</h3>
+                    <p>Advanced diabetes prediction system powered by AI technology for better healthcare management.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                </path>
+                            </svg>
+                            <span>9800000000</span>
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>something@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 BayMax. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+</body>
+    {% comment %} <script src="{% static 'js/predict.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script> {% endcomment %}
+
+    <script src="{% static 'js/predict.js' %}?v={% now 'U' %}"></script>
+    <script src="{% static 'js/script.js' %}?v={% now 'U' %}"></script>
+</html>
