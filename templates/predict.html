@@ -61,6 +61,7 @@
 
     <!-- Prediction Form Section -->
     <section class="prediction-form">
+        {% csrf_token %}  <!-- Add this line to include the CSRF token -->
         <div class="container">
             <h1 class="fade-up">Diabetes Risk Assessment</h1>
             <p class="fade-up">Answer the questions below one at a time.</p>
