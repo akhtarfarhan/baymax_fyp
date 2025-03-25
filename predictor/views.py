@@ -1,3 +1,4 @@
+#this one is hitting the server
 from django.shortcuts import render, redirect
 from django.http import HttpResponse 
 from .models import User, Blog, Prediction
@@ -16,6 +17,7 @@ def index_view(request):
 
 #login view
 def login_view(request):
+    print("something something")
     if request.method == 'POST':
         user_name = request.POST.get('user_name')
         password = request.POST.get('password')
@@ -207,6 +209,7 @@ def logout_view(request):
 
 @csrf_exempt
 def predict_view(request):
+    print('this is to check for the predict app')
     if not request.session.get('user_name'):
         return JsonResponse({'success': False, 'message': 'Please log in to make a prediction'}, status=403)
 
@@ -276,7 +279,7 @@ def predict_view(request):
         except Exception as e:
             logger.error("Unexpected error: %s", str(e))
             return JsonResponse({
-                'success': False',
+                'success': False,
                 'message': str(e)
             }, status=500)
 
