@@ -207,6 +207,9 @@ def logout_view(request):
     del request.session['user_name']
     return redirect('predictor:login')
 
+
+
+#Predict view
 @csrf_exempt
 def predict_view(request):
     print('this is to check for the predict app')
