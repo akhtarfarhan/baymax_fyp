@@ -130,41 +130,38 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
-
             if (isValid) {
                 console.log('Final Form Data:', formData);
-            
-                fetch('/predict/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCsrfToken(),
-                    },
-                    body: JSON.stringify({ data: formData })
-                })
-                .then(async response => {
+        
+                try {
+                    const response = await fetch('/predict/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken(),
+                        },
+                        body: JSON.stringify({ data: formData })
+                    });
+        
                     if (!response.ok) {
-                        // If response is not OK, try reading text to debug
+                        console.log('Reaches here!');
                         const errorText = await response.text();
                         throw new Error(`Server Error: ${errorText}`);
                     }
-                    
-                    return response.json(); // Parse JSON only once
-                })
-                .then(data => {
-                    console.log('This is the data:', data);
-                    
+        
+                    const data = await response.json();
+                    console.log(`This is the data:`, data);
+        
                     if (data.success) {
                         window.location.href = data.redirect_url;
                     } else {
-                        alert('Error: ' + (data.message || 'An unknown error occurred.'));
+                        alert(`Error: ${data.message || 'An unknown error occurred.'}`);
                     }
-                })
-                .catch(error => {
+                } catch (error) {
                     console.error('Submission error:', error);
                     alert('An error occurred while submitting your prediction.');
-                });
-            }
+                }
+            }            
             
         });
     }

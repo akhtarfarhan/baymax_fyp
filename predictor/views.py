@@ -114,6 +114,7 @@ def dashboard_view(request):
 
 
 
+
 def blog_view(request):
     if request.method == 'POST':
         if not request.session.get('user_name'):
@@ -173,58 +174,30 @@ import json
 from .models import User, Prediction
 
 @csrf_exempt
-def predict_view(request):
-    if request.method == 'POST':
-        try:
-            # Parse the JSON data from the request body
-            data = json.loads(request.body)
-            user_name = data.get('user_name')
-            user = User.objects.get(user_name=user_name)
+# def predict_view(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#             # Process your prediction data here
+#             return JsonResponse({
+#                 'success': True,
+#                 'redirect_url': '/results/'  # or whatever URL you want to redirect to
+#             })
+#         except json.JSONDecodeError:
+#             return JsonResponse({
+#                 'success': False,
+#                 'message': 'Invalid JSON data'
+#             }, status=400)
+#         except Exception as e:
+#             return JsonResponse({
+#                 'success': False,
+#                 'message': str(e)
+#             }, status=500)
 
-            # Create a new Prediction object
-            prediction = Prediction.objects.create(
-                user=user,
-                gender=data.get('gender'),
-                age=int(data.get('age')),
-                weight=float(data.get('weight')),
-                height=float(data.get('height')),
-                pregnancies=int(data.get('pregnancies', 0)),
-                glucose=float(data.get('glucose')),
-                blood_pressure=float(data.get('bloodPressure')),
-                skin_thickness=float(data.get('skinThickness')),
-                insulin=float(data.get('insulin')),
-            )
-
-            # Calculate risk level based on glucose value
-            risk_level = "Low" if float(data.get('glucose')) < 140 else "High"
-            prediction.risk_level = risk_level
-            prediction.save()
-
-            # Return a success response
-            return JsonResponse({
-                'success': True,
-                'message': 'Prediction data saved successfully.',
-                'redirect_url': '/dashboard/',
-                'prediction_dict' : {
-                    'user' : prediction.user,
-                    'gender' : prediction.age
-                }
-            })
-        except User.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'User not found.'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'message': 'Invalid data format.'}, status=400)
-        except ValueError:
-            return JsonResponse({'success': False, 'message': 'Invalid numeric values.'}, status=400)
-        except Exception as e:
-            logger.error(f"Unexpected error: {e}")
-            return JsonResponse({'success': False, 'message': str(e)}, status=500)
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
-
-    context = {
-        'user_name': user_name
-    }
-    return render(request, 'predict.html', context)
+#     context = {
+#         'user_name': request.session.get('user_name')
+#     }
+#     return render(request, 'predict.html', context)
 
 
 # Logout view
@@ -232,9 +205,82 @@ def logout_view(request):
     del request.session['user_name']
     return redirect('predictor:login')
 
+@csrf_exempt
 def predict_view(request):
+    if not request.session.get('user_name'):
+        return JsonResponse({'success': False, 'message': 'Please log in to make a prediction'}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            logger.debug("Received data: %s", data)
+
+            # Extract all the required fields from the POST data
+            prediction_data = {
+                'gender': data.get('gender'),
+                'age': int(data.get('age', 0)),
+                'weight': float(data.get('weight', 0)),
+                'height': float(data.get('height', 0)),
+                'pregnancies': int(data.get('pregnancies', 0)),
+                'glucose': int(data.get('glucose', 0)),
+                'bloodPressure': int(data.get('bloodPressure', 0)),
+                'skinThickness': int(data.get('skinThickness', 0)),
+                'insulin': int(data.get('insulin', 0))
+            }
+
+            # Get the current user
+            user = User.objects.get(user_name=request.session['user_name'])
+
+            # Simple prediction logic (you can replace this with your ML model)
+            risk_level = "Low"
+            if prediction_data['glucose'] > 126 or prediction_data['insulin'] > 200:
+                risk_level = "High"
+            elif prediction_data['glucose'] > 100:
+                risk_level = "Medium"
+
+            # Save prediction to database
+            prediction = Prediction.objects.create(
+                user=user,
+                gender=prediction_data['gender'],
+                age=prediction_data['age'],
+                weight=prediction_data['weight'],
+                height=prediction_data['height'],
+                pregnancies=prediction_data['pregnancies'],
+                glucose=prediction_data['glucose'],
+                blood_pressure=prediction_data['bloodPressure'],
+                skin_thickness=prediction_data['skinThickness'],
+                insulin=prediction_data['insulin'],
+                risk_level=risk_level
+            )
+
+            # Store in session for immediate display (optional)
+            request.session['latest_prediction_id'] = prediction.id
+
+            return JsonResponse({
+                'success': True,
+                'redirect_url': '/dashboard/'
+            })
+
+        except json.JSONDecodeError as e:
+            logger.error("JSON decode error: %s", str(e))
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid JSON data'
+            }, status=400)
+        except User.DoesNotExist:
+            logger.error("User not found")
+            return JsonResponse({
+                'success': False,
+                'message': 'User not found'
+            }, status=404)
+        except Exception as e:
+            logger.error("Unexpected error: %s", str(e))
+            return JsonResponse({
+                'success': False',
+                'message': str(e)
+            }, status=500)
+
     context = {
         'user_name': request.session.get('user_name')
     }
     return render(request, 'predict.html', context)
-

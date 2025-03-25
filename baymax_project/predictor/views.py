@@ -149,3 +149,4 @@ def logout_view(request):
 def predict_view(request):
     return render(request, 'predict.html')
 
+
