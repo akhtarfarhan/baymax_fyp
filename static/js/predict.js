@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const navLinks = document.querySelector('.nav-links');
+
+    mobileMenuButton.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     console.log("predict.js loaded successfully");
 
     const formSlider = document.getElementById('formSlider');

@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const navLinks = document.querySelector('.nav-links');
+
+    mobileMenuButton.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
     // ... (Navbar scroll effect, Mobile Menu Toggle, Chatbot Toggle, Send Message remain unchanged)
 
     // Blog Creation Chatbox

@@ -1,3 +1,12 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const navLinks = document.querySelector('.nav-links');
+
+    mobileMenuButton.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+});
+
 console.log("this one is httin")
 // Navbar scroll effect
 const navbar = document.querySelector('.navbar');
