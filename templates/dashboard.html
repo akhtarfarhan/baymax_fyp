@@ -66,6 +66,7 @@
             <h1>Welcome Back, {{ name }}!</h1>
             <div class="dashboard-grid">
                 <!-- User Info Card -->
+                                <!-- User Info Card -->
                 <div class="dashboard-card tilted-card">
                     <div class="card-content">
                         <h2>Your Information</h2>
@@ -73,18 +74,17 @@
                             <p>Name: {{ name }}</p>
                             <p>Email: {{ email }}</p>
                             <p>Age: {{ age|default:'Not provided' }}</p>
-                            <p>Gender: {{ gender|default:'Not provided' }}</p>
+                            <p>Gender: {{ gender|title|default:'Not provided' }}</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Prediction History Card -->
                 <div class="dashboard-card tilted-card">
                     <div class="card-content">
                         <h2>Prediction History</h2>
                         <div class="card-summary">
                             {% if latest_prediction %}
-                                <p><strong>Last Prediction:</strong> {{ latest_prediction.risk_level }}</p>
+                                <p><strong>Last Prediction:</strong> {{ latest_prediction.risk_level }} (Probability: {{ latest_prediction.probability|floatformat:2 }})</p>
                                 <p><strong>Date:</strong> {{ latest_prediction.created_at|date:"Y-m-d" }}</p>
                             {% else %}
                                 <p>No predictions yet.</p>
@@ -96,6 +96,7 @@
                                     <tr>
                                         <th>Date</th>
                                         <th>Risk Level</th>
+                                        <th>Probability</th>
                                         <th>Details</th>
                                     </tr>
                                 </thead>
@@ -104,11 +105,12 @@
                                         <tr>
                                             <td>{{ prediction.created_at|date:"Y-m-d" }}</td>
                                             <td>{{ prediction.risk_level }}</td>
+                                            <td>{{ prediction.probability|floatformat:2 }}</td>
                                             <td>Glucose: {{ prediction.glucose }} mg/dL</td>
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="3">No prediction history available.</td>
+                                            <td colspan="4">No prediction history available.</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -123,17 +125,18 @@
                         <h2>Your Latest Input Summary</h2>
                         {% if latest_prediction %}
                             <div class="card-summary">
-                                <p><strong>Gender:</strong> {{ latest_prediction.gender }}</p>
+                                <p><strong>Gender:</strong> {{ latest_prediction.gender|title }}</p>
                                 <p><strong>Age:</strong> {{ latest_prediction.age }}</p>
                             </div>
                             <div class="card-details">
-                                <p><strong>Pregnancies:</strong> {{ latest_prediction.pregnancies }}</p>
+                                <p><strong>Pregnancies:</strong> {{ latest_prediction.pregnancies|default:'N/A' }}</p>
                                 <p><strong>Glucose Level:</strong> {{ latest_prediction.glucose }} mg/dL</p>
                                 <p><strong>Blood Pressure:</strong> {{ latest_prediction.blood_pressure }} mmHg</p>
                                 <p><strong>Skin Thickness:</strong> {{ latest_prediction.skin_thickness }} mm</p>
                                 <p><strong>Insulin Level:</strong> {{ latest_prediction.insulin }} mu U/ml</p>
                                 <p><strong>Weight:</strong> {{ latest_prediction.weight }} kg</p>
-                                <p><strong>Height:</strong> {{ latest_prediction.height }} ft</p>
+                                <p><strong>Height:</strong> {{ latest_prediction.height }} cm</p>
+                                <p><strong>BMI:</strong> {{ latest_prediction.bmi|floatformat:1 }} kg/m²</p>  <!-- Display BMI -->
                             </div>
                         {% else %}
                             <div class="card-summary">
